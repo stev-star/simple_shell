@@ -10,8 +10,8 @@ char *my_strdup(const char *statement)
 	char *new_string = (char *)malloc(len);
 	size_t a = 0;
 
-	if (new_string == Null)
-		return (Null);
+	if (new_string == NULL)
+		return (NULL);
 
 	for (; a < len; a++)
 	{

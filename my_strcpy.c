@@ -9,7 +9,7 @@ char *my_strcpy(char *new, char *original)
                 length++;
 
         for (; a < length; a++)
-		new[a] = origin[a];
+		new[a] = original[a];
 
 	new[a] = '\0';
 
