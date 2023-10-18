@@ -2,7 +2,7 @@
 /**
  * my_strlen - string length
  * @statement: string
- * Return: number of characters in the specified string
+ * gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hshReturn: number of characters in the specified string
  */
 size_t my_strlen(const char *statement)
 {
