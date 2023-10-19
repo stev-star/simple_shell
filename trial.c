@@ -121,7 +121,7 @@ int main() {
     /* Find the executable file for the command. */
     executable_path = find_executable(tokens[0], getenv("PATH"));
     if (executable_path == NULL) {
-      perror("Command not found: %s\n", tokens[0]);
+      perror("Command not found");
       free(line);
       free(tokens);
       continue;
@@ -137,7 +137,7 @@ int main() {
 
     /* Check the exit status of the command. */
     if (status != 0) {
-      perror("Command failed: %s\n", tokens[0]);
+      perror("Command failed");
     }
   }
 
