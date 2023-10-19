@@ -1,11 +1,11 @@
 #include "shell.h"
 
-/* Function definitions */
 void prompt_user(char **line, size_t *len)
 {
     /* for prompting user */
     char *prompt = "cisfun$ ";
     ssize_t prompt_bytes_written = 0;
+    ssize_t characters_read;
 
     if (isatty(STDIN_FILENO))
     {
@@ -20,15 +20,17 @@ void prompt_user(char **line, size_t *len)
     fflush(stdout);
 
     /** get command from user */
-    ssize_t characters_read = my_getline(line, len, stdin);
+    characters_read = my_getline(line, len, stdin);
     if (characters_read == EOF)
     {
         exit(0);
     }
 }
-
 void handle_commands(char *line, char ***command, size_t *i)
 {
+    (void)command;
+    (void)i;
+
     /* if command is exit */
     if (my_strcmp(line, "exit") == 0)
     {
@@ -103,15 +105,16 @@ void tokenize_command(char *line, char ***command, size_t *max_command, size_t *
 void allocate_space_for_command(char ***command, size_t *max_command, size_t i)
 {
     /* allocating space for command array */
+    const char *delimiters = " \n\t\r\a";
     *max_command = 10;
     *command = malloc(sizeof(char *) * *max_command);
     i = 0;
+    char *command_token;
     while (command_token != NULL)
     {
         /* reallocate memory when max commands reach */
         if (i >= *max_command)
         {
- {
             *max_command *= 2;
             *command = realloc(*command, sizeof(char *) * *max_command);
             if (*command == NULL)

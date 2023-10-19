@@ -2,20 +2,25 @@
 
 void search_directories(char **path, char ***directories, char *line, char ***command, size_t *max_directories, size_t *searching_i, size_t *found)
 {
+    char *path_env_var;
+    size_t directories_i;
+    DIR *directory_stream;
+    struct dirent *entry;
     /* if program name is not a path */
     if (*path == NULL) {
         /* taking environment variable PATH */
         char *PATH = getenv("PATH");
 
         if (PATH == NULL)
-            continue;
+            return;
 
         /*CHECK IF STRDUP SUCCEEDED*/
         path_env_var = my_strdup(PATH);
         if (path_env_var == NULL)
-            continue;
+            return;
 
         /* tokenize PATH into array directories*/
+        char *directories_token;
         directories_token = strtok(path_env_var, ":");
         if (directories_token == NULL)
         {
@@ -40,7 +45,7 @@ void search_directories(char **path, char ***directories, char *line, char ***co
             /*what if strdup fails?*/
             (*directories)[directories_i] = my_strdup(directories_token);
             if (PATH == NULL)
-                continue;
+                return;
             directories_token = strtok(NULL, ":");
             directories_i++;
         }
@@ -49,7 +54,7 @@ void search_directories(char **path, char ***directories, char *line, char ***co
 
         /* opening all directories to look for line(e.g "ls") */
         *searching_i = 0;
- while ((*directories)[*searching_i] != NULL)
+        while ((*directories)[*searching_i] != NULL)
         {
             directory_stream = opendir((*directories)[*searching_i]);
 
@@ -63,7 +68,7 @@ void search_directories(char **path, char ***directories, char *line, char ***co
             entry = readdir(directory_stream);
             while (entry != NULL)
             {
-                if (my_strcmp(command[0], entry->d_name) == 0)
+                if (my_strcmp(*command[0], entry->d_name) == 0)
                 {
                     *found = 1;
                     break;
@@ -87,9 +92,14 @@ void search_directories(char **path, char ***directories, char *line, char ***co
 }
 void handle_fork(char *path, char **command, char **directories, size_t searching_i, char *line)
 {
-    /* 5. forks program to create a new process (child) */
-    /*check if i found executatble path use found*/
+    pid_t child_pid;
+    int status;
+    char *concat_path;
+    size_t size;
+
+    /* Fork a child process */
     child_pid = fork();
+
     if (child_pid == -1)
     {
         perror("fork");
@@ -99,20 +109,21 @@ void handle_fork(char *path, char **command, char **directories, size_t searchin
         /* this is the child */
         if (path == NULL)/*if not a path*/
         {
-            size = my_strlen(directories[searching_i]) + my_strlen(line) + 2;
+            size = strlen(directories[searching_i]) + strlen(line) + 2;
             concat_path = malloc(size);
             if (concat_path == NULL)
             {
                 perror("malloc");
             }
 
-            /* forming a path to be executed */            my_strcpy(concat_path, directories[searching_i]);
-            my_strcat(concat_path, "/");
-            my_strcat(concat_path, command[0]/*line*/);
+            /* forming a path to be executed */
+            strcpy(concat_path, directories[searching_i]);
+            strcat(concat_path, "/");
+            strcat(concat_path, command[0]/*line*/);
 
             /* executing the program */
             command[0] = concat_path;
-            execve(command[0], command, environ);
+            execve(command[0], command, NULL);
 
             /* if execve fails */
             perror("execve");
@@ -121,19 +132,17 @@ void handle_fork(char *path, char **command, char **directories, size_t searchin
         }
         else
         {
-            (void)av;
-            (void)err_msg;
-            execve(command[0], command, environ);
+            execve(command[0], command, NULL);
 
             /* handle execve failure */
             perror("execve");
         }
-
     }
 
     /* continuing what happens in the parent (this program) */
     wait(&status);
 }
+
 void clean_up(char **command, char **directories, char **path_env_var, char **concat_path, char **line)
 {
         int i = 0;
