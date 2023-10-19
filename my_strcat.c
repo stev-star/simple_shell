@@ -1,5 +1,10 @@
 #include "shell.h"
-
+/**
+ * my_strcat - Concatenates two strings.
+ * @param dest The destination string.
+ * @param str_to_copy The string to be copied.
+ * @returns A pointer to the destination string.
+ */
 char *my_strcat(char *dest, char *str_to_copy)
 {
 	int a, b;
