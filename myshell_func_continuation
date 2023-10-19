@@ -28,7 +28,7 @@ void search_directories(char **path, char ***directories, char *line, char ***co
         }
         /* allcoating space for directories array */
         *max_directories = 100;/*max_path = 4096*/
-        *directories = malloc(sizeof(char *) * *max_directories);
+        *directories = malloc(sizeof(char **) * *max_directories);
         directories_i = 0;
 
         while (directories_token != NULL)
@@ -90,7 +90,7 @@ void search_directories(char **path, char ***directories, char *line, char ***co
         }
     }
 }
-void handle_fork(char *path, char **command, char **directories, size_t searching_i, char *line)
+void handle_fork(char *path, char **command, char **direct_ories, size_t searching_i, char *line)
 {
     pid_t child_pid;
     int status;
@@ -109,7 +109,7 @@ void handle_fork(char *path, char **command, char **directories, size_t searchin
         /* this is the child */
         if (path == NULL)/*if not a path*/
         {
-            size = strlen(directories[searching_i]) + strlen(line) + 2;
+            size = strlen(direct_ories[searching_i]) + strlen(line) + 2;
             concat_path = malloc(size);
             if (concat_path == NULL)
             {
@@ -117,7 +117,7 @@ void handle_fork(char *path, char **command, char **directories, size_t searchin
             }
 
             /* forming a path to be executed */
-            strcpy(concat_path, directories[searching_i]);
+            strcpy(concat_path, direct_ories[searching_i]);
             strcat(concat_path, "/");
             strcat(concat_path, command[0]/*line*/);
 
@@ -142,20 +142,20 @@ void handle_fork(char *path, char **command, char **directories, size_t searchin
     /* continuing what happens in the parent (this program) */
     wait(&status);
 }
-void clean_up(char **command, char **directories, char **path_env_var, char **concat_path, char **line)
+void clean_up(char **command, char **dir, char **path_env_var, char **concat_path, char **line)
 {
     int i = 0;
 
-    if (directories == NULL)
+    if (dir == NULL)
     {
         int free_dir_i;
-        for (free_dir_i = 0; directories[free_dir_i] != NULL; free_dir_i++)
+        for (free_dir_i = 0; dir[free_dir_i] != NULL; free_dir_i++)
         {
-            free(directories[free_dir_i]);
-            directories[free_dir_i] = NULL;
+            free(dir[free_dir_i]);
+            dir[free_dir_i] = NULL;
         }
-        free(directories);
-        directories = NULL;
+        free(dir);
+        dir = NULL;
     }
 
     for (; command[i] != NULL; i++)
