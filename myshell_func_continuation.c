@@ -5,6 +5,7 @@ void search_directories(char **path, char ***directories, char *line, char ***co
     char *path_env_var;
     size_t directories_i;
     DIR *directory_stream;
+    char *directories_token;
     struct dirent *entry;
     /* if program name is not a path */
     if (*path == NULL) {
@@ -20,7 +21,6 @@ void search_directories(char **path, char ***directories, char *line, char ***co
             return;
 
         /* tokenize PATH into array directories*/
-        char *directories_token;
         directories_token = strtok(path_env_var, ":");
         if (directories_token == NULL)
         {
@@ -142,13 +142,13 @@ void handle_fork(char *path, char **command, char **directories, size_t searchin
     /* continuing what happens in the parent (this program) */
     wait(&status);
 }
-
 void clean_up(char **command, char **directories, char **path_env_var, char **concat_path, char **line)
 {
-        int i = 0;
-    /* freeing directories_i */
-    if (path == NULL)
+    int i = 0;
+
+    if (directories == NULL)
     {
+        int free_dir_i;
         for (free_dir_i = 0; directories[free_dir_i] != NULL; free_dir_i++)
         {
             free(directories[free_dir_i]);
@@ -158,7 +158,6 @@ void clean_up(char **command, char **directories, char **path_env_var, char **co
         directories = NULL;
     }
 
-    /* freeing command[i] */
     for (; command[i] != NULL; i++)
     {
         free(command[i]);
@@ -173,10 +172,9 @@ void clean_up(char **command, char **directories, char **path_env_var, char **co
     free(concat_path);
     concat_path = NULL;
 
-    /*end of loop;*/
-    while (line != NULL)
+    while (line != NULL && *line != NULL)
     {
-        free(line);
-        line = NULL;
-     }
+        free(*line);
+        line++;
+    }
 }

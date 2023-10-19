@@ -48,7 +48,8 @@ int main(int ac, char **av)
         check_program_name(line, &path);
 
         /* 5. Search directories */
-        search_directories(&path, &directories, line, &command, &max_directories, &searching_i, &found);
+        /*search_directories(&path, &directories, line, &command, &max_directories, &searching_i, &found);*/
+	search_directories(&path, &directories, line, &command, &max_directories, &searching_i, &found);
 
         /* 6. Handle fork */
         handle_fork(path, command, directories, searching_i, line);
