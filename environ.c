@@ -9,7 +9,15 @@ void my_environ(char **envp, char **env)
 {
 	int num = 0;
 
-	for (; env[num] != NULL; num++)
+	/**
+	 * for (; env[num] != NULL; num++)
+	 *	envp[num] = env[num];
+	 * envp[num] = NULL;
+	 */
+	while (env[num] != NULL)
+	{
 		envp[num] = env[num];
+		num++;
+	}
 	envp[num] = NULL;
 }

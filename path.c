@@ -18,11 +18,18 @@ void Path(char **envp, char **args, char **av)
 	}
 
 	tokens = strtok(path, ":");
-	while (tokens != NULL)
+	/**
+	 * while (tokens != NULL)
+	 * {
+	 *	snprintf(buffer, sizeof(buffer), "%s/%s", tokens, args[0]);
+	 *	execve(buffer, args, envp);
+	 *	tokens = strtok(NULL, ":");
+	 *  }
+	 */
+	for (; tokens != NULL; tokens = strtok(NULL, ":"))
 	{
 		snprintf(buffer, sizeof(buffer), "%s/%s", tokens, args[0]);
 		execve(buffer, args, envp);
-		tokens = strtok(NULL, ":");
 	}
 	if (errno == ENOENT)
 		fprintf(stderr, "%s: 1: %s: not found\n", av[0], args[0]);
