@@ -1,15 +1,15 @@
 #include "shell.h"
 
 /**
- * npath - handles PATH, when cmd isn't a path like '/bin/'
+ * Path - handles PATH, when cmd isn't a path like '/bin/'
  * @envp: the env pointer
  * @args: array of commands
  * @av: for the executable name
  */
-void npath(char **envp, char **args, char **av)
+void Path(char **envp, char **args, char **av)
 {
-	char *token, *path = getenv("PATH");
-	char buffer[BUFFER];
+	char *tokens, *path = getenv("PATH");
+	char buffer[BUF];
 
 	if (path == NULL)
 	{
@@ -17,12 +17,12 @@ void npath(char **envp, char **args, char **av)
 		exit(EXIT_FAILURE);
 	}
 
-	token = strtok(path, ":");
-	while (token != NULL)
+	tokens = strtok(path, ":");
+	while (tokens != NULL)
 	{
-		snprintf(buffer, sizeof(buffer), "%s/%s", token, args[0]);
+		snprintf(buffer, sizeof(buffer), "%s/%s", tokens, args[0]);
 		execve(buffer, args, envp);
-		token = strtok(NULL, ":");
+		tokens = strtok(NULL, ":");
 	}
 	if (errno == ENOENT)
 		fprintf(stderr, "%s: 1: %s: not found\n", av[0], args[0]);

@@ -1,12 +1,12 @@
 #include "shell.h"
 
 /**
- * readInput - collects user input
+ * Input - collects user input
  * @input: the user input
  * @size: the sizeof(user input)
  * Return: 0 if getline failed, 1 if success
  */
-int readInput(char *input, size_t size)
+int Input(char *input, size_t size)
 {
 	int i = getline(&input, &size, stdin);
 

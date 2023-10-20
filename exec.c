@@ -2,34 +2,34 @@
 #include <errno.h>
 
 /**
- * executeInput - executes the users commands
+ * executeCommand - executes the users commands
  * @cmds: the user input
  * @av: arg vector
  * @env: the env variable
  * Return: exit status
  */
-int executeInput(char *cmds, char **av, char **env)
+int executeCommand(char *cmds, char **av, char **env)
 {
-	char *args[BUFFER];
-	int status, wxit;
+	char *args[BUF];
+	int status, wfit;
 	size_t count = 0;
-	pid_t _child = fork();
-	char *token, *envp[BUFFER];
+	pid_t child_pid = fork();
+	char *tokens, *envp[BUF];
 
-	if (_child == -1)
+	if (child_pid == -1)
 	{
 		perror("process failed");
 		exit(EXIT_FAILURE);
-	} else if (_child == 0)
+	} else if (child_pid == 0)
 	{
-		token = strtok(cmds, " \n");
-		while (token != NULL)
+		tokens = strtok(cmds, " \n");
+		while (tokens != NULL)
 		{
-			args[count++] = token;
-			token = strtok(NULL, " \n");
+			args[count++] = tokens;
+			tokens = strtok(NULL, " \n");
 		}
 		args[count] = NULL;
-		_environ(envp, env);
+		my_environ(envp, env);
 		if (strchr(args[0], '/') != NULL)
 		{
 			if (execve(args[0], args, envp) == -1)
@@ -41,13 +41,13 @@ int executeInput(char *cmds, char **av, char **env)
 				exit(EXIT_FAILURE);
 			}
 		} else
-			npath(envp, args, av);
+			Path(envp, args, av);
 	} else
-	{waitpid(_child, &status, 0);
+	{waitpid(child_pid, &status, 0);
 		if (WIFEXITED(status))
-			wxit = WEXITSTATUS(status);
+			wfit = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
 			return (WTERMSIG(status));
 	}
-	return (wxit);
+	return (wfit);
 }

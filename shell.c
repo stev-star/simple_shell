@@ -9,9 +9,9 @@
  */
 int main(int ac __attribute__((unused)), char **av, char **env)
 {
-	char input[BUFFER];
+	char input[BUF];
 	int interactive = isatty(STDIN_FILENO);
-	int estat;
+	int stat;
 
 	while (1)
 	{
@@ -19,7 +19,7 @@ int main(int ac __attribute__((unused)), char **av, char **env)
 			printf("cisfun$ "); /* only prints in interactive mode */
 
 		/* collects user input */
-		if (!readInput(input, sizeof(input)))
+		if (!Input(input, sizeof(input)))
 		{
 			/* exit loop on EOF or invalid input */
 			if (interactive)
@@ -31,8 +31,8 @@ int main(int ac __attribute__((unused)), char **av, char **env)
 			exit(EXIT_SUCCESS);
 
 		/* executes user command */
-		estat = executeInput(input, av, env);
+		stat = executeCommand(input, av, env);
 	}
 
-	return (estat);
+	return (stat);
 }
